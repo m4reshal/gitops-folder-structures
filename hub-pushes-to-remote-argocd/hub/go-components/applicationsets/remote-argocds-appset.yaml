@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: remote-argocd
+  namespace: openshift-gitops
+spec:
+  generators:
+  - clusters:
+      selector:
+        matchLabels:
+          argocd.argoproj.io/secret-type: cluster
+  template:
+    metadata:
+      name: '{{name}}-remote-argocd'
+    spec:
+      project: cluster-config
+      syncPolicy:
+	    preserveResourcesOnDeletion: true
+        automated:
+          #prune: true
+          #selfHeal: true
+          selfHeal: true
+          prune: true
+        retry:
+          limit: 15
+          backoff:
+            duration: 15s
+            factor: 2
+            maxDuration: 5m
+      source:
+        repoURL: https://github.com/m4reshal/gitops-folder-structures
+        targetRevision: master
+        path: 'hub-pushes-to-remote-argocd/managed/envs/{{metadata.labels.usage}}'
+      destination:
+        server: '{{server}}'

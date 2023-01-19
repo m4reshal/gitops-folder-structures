@@ -1,0 +1,19 @@
+kind: Application
+metadata:
+  name: bootstrap-app-pushed-by-hub
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: openshift-gitops
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    path: hub-pushes-to-remote-argocd/cluster-specific/cluster-xxx1/bootstrap/overlays/default
+    repoURL: https://github.com/m4reshal/gitops-folder-structures
+    targetRevision: master
+  syncPolicy:
+    automated:
+      #prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

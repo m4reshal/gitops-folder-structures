@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-apps
+  namespace: openshift-gitops
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/m4reshal/example-openshift-gitops
+      revision: master
+      directories:
+      - path: ocpdev-255bx/managed/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      ignoreDifferences:
+      - group: networking.istio.io
+        kind: VirtualService
+        jsonPointers:
+        - /spec/http/0
+      - kind: ConfigMap
+        jsonPointers:
+        - /data/service-ca.crt
+      project: cluster-config
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          #selfHeal: false
+        syncOptions:
+        - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 15
+          backoff:
+            duration: 15s
+            factor: 2
+            maxDuration: 5m
+      source:
+        repoURL: https://github.com/m4reshal/example-openshift-gitops
+        targetRevision: master
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc

@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+    enableUserWorkload: true #to be used with istio
+    #prometheusOperator:
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      #tolerations:
+      #- key: infra
+      #  value: reserved
+      #  effect: NoSchedule
+      #- key: infra
+      #  value: reserved
+      #  effect: NoExecute
+    prometheusK8s:
+      retention: 7d
+      volumeClaimTemplate:
+        spec:
+          storageClassName: thin #ocs-storagecluster-ceph-rbd
+          resources:
+            requests:
+              storage: 20Gi
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+    alertmanagerMain:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: thin #ocs-storagecluster-ceph-rbd
+          resources:
+            requests:
+              storage: 10Gi
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+    kubeStateMetrics:
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+    grafana:
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+    telemeterClient:
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+    k8sPrometheusAdapter:
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+    openshiftStateMetrics:
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+    thanosQuerier:
+      #nodeSelector:
+        #node-role.kubernetes.io/infra: ""
+      tolerations:
+      - key: infra
+        value: reserved
+        effect: NoSchedule
+      - key: infra
+        value: reserved
+        effect: NoExecute
+

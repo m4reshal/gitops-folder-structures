@@ -1,0 +1,27 @@
+#apiVersion: argoproj.io/v1alpha1
+#kind: AppProject
+#metadata:
+#  name: test-project
+#  namespace: openshift-gitops
+#spec: {}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: workloads
+  namespace: openshift-gitops
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  sourceRepos:
+  - '*'
+  roles:
+  - description: Developers get view and sync
+    name: developer
+    policies:
+    - p, role:developer, applications, get, test-project/*, allow
+    - p, role:developer, applications, sync, test-project/*, allow
+    - p, role:developer, projects, get, test-project, allow

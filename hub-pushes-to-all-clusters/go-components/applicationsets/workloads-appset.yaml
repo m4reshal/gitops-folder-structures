@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workloads
+  namespace: openshift-gitops
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/m4reshal/example-openshift-gitops
+      revision: master
+      directories:
+      - path: ocpdev-255bx/workloads/*
+  template:
+    metadata:
+      name: '{{path.basename}}'
+    spec:
+      project: workloads
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        retry:
+          limit: 15
+          backoff:
+            duration: 15s
+            factor: 2
+            maxDuration: 5m
+      source:
+        repoURL: https://github.com/m4reshal/example-openshift-gitops
+        targetRevision: master
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
